@@ -1,0 +1,69 @@
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!--标题-->
+            <div class="box box-default">
+                <div class="box-header with-border"><h3 class="box-title">文章分类</h3></div>
+
+                <!--添加分类-->
+                <div style="margin-top: 10px;">
+                    <div class="btn-group" style="margin-left: 10px;">
+                        <a href="{:url('/admin/article/category/add')}" class="btn btn-danger ">
+                            新增分类
+                        </a>
+                    </div>
+                </div>
+                <!--分类列表-->
+                <div class="box-body table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <tbody>
+                            <!--表格头部-->
+                            <tr>
+                                <th class="hidden-xs">
+                                    <label><input onchange="checkAll()" type="checkbox" value=""></label>
+                                </th>
+                                <th>编号</th>
+                                <th>名称</th>
+                                <th>状态</th>
+                                <th>备注</th>
+                                <th>操作</th>
+                            </tr>
+
+                            {volist name="categorylist" id="category" }
+                            <tr>
+                                <td class="hidden-xs">
+                                    <label><input name="checkbox" class="check" type="checkbox" value="{$category.id}"></label>
+                                </td>
+                                <td>
+                                    {$category.id}
+                                </td>
+                                <td>
+                                    {$category.name}
+                                </td>
+                                <td>
+                                    {eq name="category.status" value="1"}
+                                    <span class="label label-success">开启</span>
+                                    {else/}
+                                    <span class="label label-default">关闭</span>
+                                    {/eq}
+                                </td>
+                                <td>
+                                    {$category.remark}
+                                </td>
+                                <td class="table-action">
+                                    <a href="{:url('/admin/article/category/add',array('id'=>$category['id']))}">编辑</a>
+                                    {eq name="category.status" value="0"}
+                                    <a href="{:url('/admin/article/category/update',array('id'=>$category['id'],'status'=>1))}">开启</a>
+                                    {else}
+                                    <a href="{:url('/admin/article/category/update',array('id'=>$category['id'],'status'=>0))}">关闭</a>
+                                    {/eq}
+                                </td>
+                            </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
