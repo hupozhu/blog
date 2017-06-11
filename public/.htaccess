@@ -1,8 +1,11 @@
-<IfModule mod_rewrite.c>
-  Options +FollowSymlinks -Multiviews
-  RewriteEngine On
 
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+<IfModule mod_rewrite.c>
+#开启重写
+RewriteEngine on
+#匹配路径目录不存在时
+RewriteCond %{REQUEST_FILENAME} !-d
+#匹配路径文件不存在时
+RewriteCond %{REQUEST_FILENAME} !-f
+#路径重写规则
+RewriteRule ^(.*)$ index.php?s=/$1 [QSA,PT,L]
 </IfModule>
