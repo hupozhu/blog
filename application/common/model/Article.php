@@ -15,7 +15,28 @@ class Article extends Model
 {
     public function category()
     {
-        return $this->hasOne('ArticleCategory','id','category_id');
+        return $this->hasOne('ArticleCategory', 'id', 'category_id');
+    }
+
+    public function getDateList($page = 1, $limit = 10)
+    {
+        return $this->page($page, $limit)->order('created_at', 'desc')->select();
+    }
+
+    public function getArticleById($id)
+    {
+        $data = $this->get($id);
+        return $data;
+    }
+
+    public function getArticleCountByMonth()
+    {
+        $data = $this
+            ->field('date_format(created_at, "%Y-%m") as create_date, count(date_format(created_at, "%Y-%m")) as count')
+            ->group('date_format(created_at, "%Y-%m")')
+            ->select();
+
+        return $data;
     }
 
 }

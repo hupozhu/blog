@@ -19,9 +19,7 @@ class Category extends BaseController
     {
         $data = ArticleCategory::all();
         if ($data) {
-            $categorylist = $data;
-            $tree = list_to_tree($categorylist, 'id', 'pid', 'sub');
-            $this->assign('categorylist', $tree);
+            $this->assign('categorylist', $data);
         } else {
             $this->assign('categorylist', null);
         }
@@ -34,6 +32,18 @@ class Category extends BaseController
         if (request()->isPost()) {
             $data = input('post.');
             $data['status'] = input('?post.status') ? $data['status'] : 0;
+
+            $parentInfo = input('post.pid_and_layered_name') . '';
+            $parent = explode('&', $parentInfo);
+
+            if (count($parent) > 1) {//有层级信息
+                $data['pid'] = $parent[0];
+                $data['layered_name'] = $parent[1] . ' > ' . $data['name'];
+            } else {//没有层级信息
+                $data['pid'] = 0;
+                $data['layered_name'] = $data['name'];
+            }
+            unset($data['pid_and_layered_name']);
 
             if (input('post.id')) {
                 $result = ArticleCategory::update($data);
@@ -53,7 +63,7 @@ class Category extends BaseController
                 $this->assign('category', $category);
             }
             //获取已经有的分类信息
-            $parentCategory = ArticleCategory::all(['pid' => 0]);
+            $parentCategory = ArticleCategory::all();
             $this->assign("parentcategory", $parentCategory);
             return view();
         }

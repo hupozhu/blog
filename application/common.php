@@ -30,6 +30,25 @@ function data_auth_sign($data)
     return $sign;
 }
 
+function resultArray($array)
+{
+    if (isset($array['data'])) {
+        $msg = '操作成功';
+        $code = 200;
+    } else {
+        $msg = '操作失败';
+        $array['data'] = '';
+        $code = 400;
+    }
+
+    return json([
+        'code' => $code,
+        'data' => $array['data'],
+        'msg' => $msg,
+    ]);
+}
+
+//list_to_tree($categorylist, 'id', 'pid', 'sub');
 function list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $keys = 'name', $sort = 'asc', $root = 0)
 {
     //创建Tree
@@ -38,6 +57,7 @@ function list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $keys 
 
     if (is_array($list)) {
         foreach ($list as $item) {
+            //将对象变为数组
             $dataArray[] = $item->toArray();
         }
 
@@ -59,13 +79,46 @@ function list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $keys 
             } else {//如果父目录存在
                 if (isset ($refer [$parentId])) {
                     $parent = &$refer[$parentId];
-                    $parent[$child] [] = &$dataArray[$key];
+                    $parent[$child][] = &$dataArray[$key];
                     $parent[$child] = my_sort($parent[$child], $keys, $sort, SORT_NUMERIC);
                 }
             }
         }
     }
     return $tree;
+}
+
+function trim_category($list, $pk = 'id', $pid = 'pid', $child = '_child', $keys = 'name', $sort = 'asc', $root = 0)
+{
+    $category = array();
+    $dataArray = array();
+
+    if (is_array($list)) {
+        $refer = array();
+        foreach ($list as $item) {
+            $dataArray[] = $item;
+        }
+
+        foreach ($dataArray as $value) {
+            find_root($dataArray, $value, $pid, $keys);
+        }
+    }
+
+    return $list;
+}
+
+function find_root($dataArray, $item, $pid = 'pid', $keys = 'name', $layeredName = 'layered_name')
+{
+    if (is_null($item[$layeredName])) {
+        $item[$layeredName] = $item[$keys];
+    } else {
+        $item[$layeredName] = $item[$keys] . ' > ' . $item[$layeredName];
+    }
+
+    if ($item[$pid] > 0) {
+
+    }
+    return;
 }
 
 /**

@@ -14,6 +14,16 @@ use think\Model;
 class ArticleCategory extends Model
 {
 
+    public function getLayeredCategory()
+    {
+        $list = $this->select();
+    }
 
+    public function getCategoryTree()
+    {
+        $list = $this->select();
+        $tree = list_to_tree($list);
+        return $tree;
+    }
 
 }
